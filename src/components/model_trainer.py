@@ -32,19 +32,56 @@ class ModelTrainer:
                 test_arr[:,-1]
             )
             models={
-            "LinearRegression":LinearRegression(),
-            "Lasso":Lasso(),
-            "Ridge":Ridge(),
-            "DecisionTreeRegressor":DecisionTreeRegressor(),
-            'RandomForestRegressor':RandomForestRegressor(),
-            "AdaBoostRegressor":AdaBoostRegressor(),
-            "CatBoostRegressor":CatBoostRegressor(verbose=False),
+            "Linear Regression":LinearRegression(),
+            "Decision Tree":DecisionTreeRegressor(),
+            'Random Forest':RandomForestRegressor(),
+            "Ada Boost":AdaBoostRegressor(),
+            "Cat Boost":CatBoostRegressor(verbose=False),
             "XGBRegressor":XGBRegressor(),
-            "KNeighborsRegressor":KNeighborsRegressor()
+            "K-Neighbors":KNeighborsRegressor()
+            }
+            params = {
+                "Linear Regression": {},
+
+                "Decision Tree": {
+                    "max_depth": [3, 5, 10],
+                    "min_samples_split": [2, 5, 10],
+                    "criterion": ["squared_error", "friedman_mse"]
+                },
+                
+                "Random Forest": {
+                    "n_estimators": [50, 100, 200],
+                    "max_depth": [None, 10, 20],
+                    "min_samples_split": [2, 5]
+                },
+                
+                "Ada Boost": {
+                    "n_estimators": [50, 100, 200],
+                    "learning_rate": [0.01, 0.1, 1]
+                },
+
+                "Cat Boost": {
+                    "iterations": [100, 200],
+                    "learning_rate": [0.01, 0.1],
+                    "depth": [4, 6]
+                },
+                
+                "XGBRegressor": {
+                    "n_estimators": [100, 200],
+                    "learning_rate": [0.01, 0.1],
+                    "max_depth": [3, 6]
+                },
+                
+                "K-Neighbors": {
+                    "n_neighbors": [3, 5, 7],
+                    "weights": ["uniform", "distance"],
+                    "algorithm": ["auto", "ball_tree"]
+                }
             }
 
+
             model_report:dict=eval_model(X_train=x_train,y_train=y_train,X_test=x_test,y_test=y_test,
-                                   models=models)
+                                   models=models,param=params)
             best_model_score=max(sorted(model_report.values()))
 
             best_model_name= list(model_report.keys())[
